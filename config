@@ -1,0 +1,23 @@
+RELEASE="buster"
+
+USERNAME="pi"
+PASSWORD="raspberry"
+
+HOSTNAME="raspberrypi"
+LOCALE="en_US.UTF-8"
+TIMEZONE="Europe/Paris"
+
+PACKAGES="raspberrypi-bootloader raspberrypi-kernel"    # Bootloader and kernel
+PACKAGES+=" libraspberrypi-bin libraspberrypi0"         # Video driver
+PACKAGES+=" dphys-swapfile fake-hwclock dosfstools"     # Hardware utilities
+PACKAGES+=" btrfs-progs sudo dhcpcd5 whiptail" 
+PACKAGES+=" ssh ssh-import-id ca-certificates curl git"
+PACKAGES+=" vim zsh neofetch"
+#PACKAGES+=" glances steamlink kodi"
+
+IMG_FILE="raspbian-minimal-$(date +%Y-%m-%d).img"
+
+BOOT_SIZE=100 # MB
+
+ROOTFS_DIR="rootfs"
+BOOTSTRAP_DIR="bootstrap"
