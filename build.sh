@@ -1,32 +1,17 @@
 #!/bin/bash
 
-# pi-gen is the tool used to create the raspberrypi.org Raspbian images
-# https://github.com/RPi-Distro/pi-gen
-
-# This project is a very basic rewrite of pi-gen, with the goal of building
-# a minimal Raspbian image to better suit my needs.
-
-# It is intended to run on Debian i386 only
-# Dependencies for original pi-gen :
-# quilt parted coreutils qemu-user-static debootstrap zerofree zip dosfstools libcap2-bin bsdtar grep rsync xz-utils curl xxd file git kmod bc
-
-# Packages this script actually uses :
-# coreutils? qemu-user-statitc debootstrap zip dosfstools 
-
-# Execute script as root
-
 if [ -f config ]; then
 	source config
 fi
 
-#rm -rf "${BOOTSTRAP_DIR}"
-#mkdir "${BOOTSTRAP_DIR}"
+rm -rf "${BOOTSTRAP_DIR}"
+mkdir "${BOOTSTRAP_DIR}"
 
-## Bootstrap
-#qemu-debootstrap --arch armhf --components main,contrib,non-free --keyring files/raspberrypi.gpg ${RELEASE} ${BOOTSTRAP_DIR} http://raspbian.raspberrypi.org/raspbian
+# Bootstrap
+qemu-debootstrap --arch armhf --components main,contrib,non-free --keyring files/raspberrypi.gpg ${RELEASE} ${BOOTSTRAP_DIR} http://raspbian.raspberrypi.org/raspbian
 
-#rm -rf "${ROOTFS_DIR}"
-#cp -r "${BOOTSTRAP_DIR}" "${ROOTFS_DIR}"
+rm -rf "${ROOTFS_DIR}"
+cp -r "${BOOTSTRAP_DIR}" "${ROOTFS_DIR}"
 
 # Package manager
 install -m 644 files/50raspberrypi "${ROOTFS_DIR}/etc/apt/apt.conf.d/"
@@ -79,4 +64,4 @@ install -v -m 644 files/fstab "${ROOTFS_DIR}/etc/fstab"
 install -m 644 files/cmdline.txt "${ROOTFS_DIR}/boot/"
 install -m 644 files/config.txt "${ROOTFS_DIR}/boot/"
 
-#./export.sh
+./export.sh
