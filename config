@@ -15,9 +15,11 @@ PACKAGES+=" ssh ssh-import-id ca-certificates curl git"
 PACKAGES+=" vim zsh neofetch"
 #PACKAGES+=" glances steamlink kodi"
 
-IMG_FILE="raspbian-minimal-$(date +%Y-%m-%d).img"
 
-BOOT_SIZE=100 # MB
+#IMG_NAME="raspbian-minimal"
+#BOOT_SIZE=100
+#ROOTFS_DIR="rootfs"
+#BOOTSTRAP_DIR="bootstrap"
 
-ROOTFS_DIR="rootfs"
-BOOTSTRAP_DIR="bootstrap"
+SKIP_BOOTSTRAP=1
+SKIP_EXPORT=1
