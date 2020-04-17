@@ -7,7 +7,7 @@ It is intended to run as on debian based linux distributions only.
 sudo ./build.sh
 ```
 Dependencies:
-coreutils qqemu-user-static debootstrap dosfstools grep rsync xz-utils
+coreutils qemu-user-static debootstrap dosfstools grep rsync xz-utils
 
 Pi-gen dependencies:
 quilt parted coreutils qemu-user-static debootstrap zerofree zip dosfstools libcap2-bin bsdtar grep rsync xz-utils curl xxd file git kmod bc
