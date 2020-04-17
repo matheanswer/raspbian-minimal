@@ -43,4 +43,6 @@ umount boot root
 rm -rf boot root
 losetup -d ${LOOP_DEV}
 
-zip ${IMG_FILE%.img}.zip ${IMG_FILE}
+#zip ${IMG_FILE%.img}.zip ${IMG_FILE}
+#xz -zkT 0 ${IMG_FILE}
+xz -k ${IMG_FILE}
