@@ -16,7 +16,8 @@ USERNAME="${USERNAME:-"pi"}"
 PASSWORD="${PASSWORD:-"raspberry"}"
 HOSTNAME="${HOSTNAME:-"raspberrypi"}"
 LOCALE="${LOCALE:-"en_US.UTF-8"}"
-TIMEZONE="${TIMEZONE:-"Europe/Paris"}"
+TIMEZONE="${TIMEZONE:-"UTC"}"
+USER_SHELL="${USER_SHELL:-"bash"}"
 
 # Bootstrap
 if [ ! "${SKIP_BOOTSTRAP}" == "1" ]; then
@@ -28,14 +29,15 @@ else
 	echo -e "${STYLE}skipping bootstrap stage${CLEAR}"
 fi
 
+# Rsync rootfs
+echo -e "${STYLE}copying bootstrap${CLEAR}"
 rm -rf "${ROOTFS_DIR}"
-rsync -aHAXx "${BOOTSTRAP_DIR}/" "${ROOTFS_DIR}/"
+rsync -aHAXx --stats -h "${BOOTSTRAP_DIR}/" "${ROOTFS_DIR}/"
 
 # Package manager
 echo -e "${STYLE}apt configuration${CLEAR}"
 install -v -m 644 files/50raspberrypi "${ROOTFS_DIR}/etc/apt/apt.conf.d/"
 install -v -m 644 files/90recommends "${ROOTFS_DIR}/etc/apt/apt.conf.d/"
-
 chroot ${ROOTFS_DIR} apt-key add < files/raspberrypi.gpg.key
 chroot ${ROOTFS_DIR} << EOF
 echo "deb http://raspbian.raspberrypi.org/raspbian ${RELEASE} main contrib non-free rpi" > /etc/apt/sources.list
@@ -64,12 +66,6 @@ apt-get clean
 rm -rf /var/lib/apt/lists/*
 EOF
 
-# Networking
-echo -e "${STYLE}networking${CLEAR}"
-echo "${HOSTNAME}" > "${ROOTFS_DIR}/etc/hostname"
-echo "127.0.1.1	${HOSTNAME}" >> "${ROOTFS_DIR}/etc/hosts"
-ln -sf /dev/null "${ROOTFS_DIR}/etc/systemd/network/99-default.link"
-
 # User
 echo -e "${STYLE}user${CLEAR}"
 chroot ${ROOTFS_DIR} << EOF
@@ -78,6 +74,15 @@ echo "${USERNAME}:${PASSWORD}" | chpasswd
 echo "root:root" | chpasswd
 usermod --pass='*' root
 EOF
+if [ "${USER_SHELL}" == "zsh" ]; then
+	install -v -m 644 -g 1000 -o 1000 files/grml-zshrc "${ROOTFS_DIR}/home/${USERNAME}/.zshrc"
+fi
+
+# Networking
+echo -e "${STYLE}networking${CLEAR}"
+echo "${HOSTNAME}" > "${ROOTFS_DIR}/etc/hostname"
+echo "127.0.1.1	${HOSTNAME}" >> "${ROOTFS_DIR}/etc/hosts"
+ln -sf /dev/null "${ROOTFS_DIR}/etc/systemd/network/99-default.link"
 
 # Time Zone
 echo -e "${STYLE}time zone${CLEAR}"
@@ -93,7 +98,7 @@ install -v -m 644 files/fstab "${ROOTFS_DIR}/etc/fstab"
 install -v -m 644 files/cmdline.txt "${ROOTFS_DIR}/boot/"
 install -v -m 644 files/config.txt "${ROOTFS_DIR}/boot/"
 
-
+# Export
 if [ ! "${SKIP_EXPORT}" == "1" ]; then
 	./export.sh
 else
