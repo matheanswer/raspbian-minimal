@@ -12,8 +12,8 @@ BOOT_SIZE="${BOOT_SIZE:-"100"}"
 IMG_NAME="${IMG_NAME:-"raspbian-minimal"}"
 IMG_FILE="${IMG_NAME}-$(date +%Y-%m-%d).img"
 
-# Image creation
-echo -e "${STYLE}building image${CLEAR}"
+# Image
+echo -e "${STYLE}building image file${CLEAR}"
 rm -f ${IMG_FILE} 
 ROOTFS_SIZE=$(du -BM -s ${ROOTFS_DIR}/ | cut -f 1 | sed "s/M//")
 IMG_SIZE=$((${BOOT_SIZE} + ${ROOTFS_SIZE} + 10))
@@ -36,6 +36,7 @@ mkdir boot root
 mount "${LOOP_DEV}p1" boot
 mount "${LOOP_DEV}p2" root
 
+# Copy
 echo -e "${STYLE}copying boot and root filesystem${CLEAR}"
 rsync -rtx --stats -h "${ROOTFS_DIR}/boot/" boot/
 rsync -aHAXx --stats -h --exclude /var/cache/apt/archives --exclude /boot "${ROOTFS_DIR}/" root/
@@ -53,6 +54,7 @@ umount boot root
 rm -rf boot root
 losetup -d ${LOOP_DEV}
 
+# Compress
 if [ ! "${SKIP_COMPRESS}" == "1" ]; then
 	echo -e "${STYLE}compressing with xz${CLEAR}"
 	rm -f ${IMG_FILE}.xz

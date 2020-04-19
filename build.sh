@@ -17,10 +17,6 @@ HOSTNAME="${HOSTNAME:-"raspberrypi"}"
 LOCALE="${LOCALE:-"en_US.UTF-8"}"
 TIMEZONE="${TIMEZONE:-"UTC"}"
 
-if $(( SWAPSIZE < 100 )); then
-	SWAPSIZE="100"
-fi
-
 PACKAGES+=" raspberrypi-bootloader raspberrypi-kernel libraspberrypi-bin libraspberrypi0 dosfstools dphys-swapfile fake-hwclock locales whiptail"
 
 # Bootstrap
@@ -34,12 +30,12 @@ else
 fi
 
 # Rsync rootfs
-echo -e "${STYLE}copying bootstrap${CLEAR}"
+echo -e "${STYLE}copying bootstrap/ to rootfs/${CLEAR}"
 rm -rf "${ROOTFS_DIR}"
 rsync -aHAXx --stats -h "${BOOTSTRAP_DIR}/" "${ROOTFS_DIR}/"
 
-# Package manager
-echo -e "${STYLE}apt config${CLEAR}"
+# Packages
+echo -e "${STYLE}packages${CLEAR}"
 install -v -m 644 files/sources.list "${ROOTFS_DIR}/etc/apt/sources.list"
 sed -i "s/RELEASE/${RELEASE}/" "${ROOTFS_DIR}/etc/apt/sources.list"
 install -v -m 644 files/99pdiffs "${ROOTFS_DIR}/etc/apt/apt.conf.d/"
@@ -59,8 +55,10 @@ apt-get clean
 rm -rf /var/lib/apt/lists/*
 EOF
 
+# Start of configuration stage
+echo -e "${STYLE}configuration${CLEAR}"
+
 # User
-echo -e "${STYLE}user${CLEAR}"
 chroot ${ROOTFS_DIR} << EOF
 useradd -m -G sudo,video -s /usr/bin/zsh $USERNAME
 echo "${USERNAME}:${PASSWORD}" | chpasswd
@@ -70,8 +68,6 @@ EOF
 install -v -m 644 -g 1000 -o 1000 files/zshrc "${ROOTFS_DIR}/home/${USERNAME}/.zshrc"
 install -v -m 644 -g 1000 -o 1000 files/zshrc.local "${ROOTFS_DIR}/home/${USERNAME}/.zshrc.local"
 sed -i "s/LOCALE/${LOCALE}/" "${ROOTFS_DIR}/home/${USERNAME}/.zshrc.local"
-
-echo -e "${STYLE}configuration${CLEAR}"
 
 # Networking
 echo "${HOSTNAME}" > "${ROOTFS_DIR}/etc/hostname"
@@ -86,11 +82,13 @@ dpkg-reconfigure -f noninteractive tzdata
 EOF
 
 # Swap
+if [[ ${SWAPSIZE} -lt 100 ]]; then
+	SWAPSIZE="100"
+fi
 install -v -m 644 files/99-swappiness.conf "${ROOTFS_DIR}/etc/sysctl.d/"
-echo "CONF_SWAPSIZE=${SWAPSIZE}" >> "${ROOTFS_DIR}/etc/dphys-swapfile"
+sed -i "s/#CONF_SWAPSIZE=/#CONF_SWAPSIZE=${SWAPSIZE}/" "${ROOTFS_DIR}/etc/dphys-swapfile"
 
 # Boot files
-echo -e "${STYLE}boot files${CLEAR}"
 install -v -m 644 files/fstab "${ROOTFS_DIR}/etc/fstab"
 install -v -m 644 files/cmdline.txt "${ROOTFS_DIR}/boot/"
 install -v -m 644 files/config.txt "${ROOTFS_DIR}/boot/"

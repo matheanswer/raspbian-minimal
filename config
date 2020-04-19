@@ -16,9 +16,9 @@ PACKAGES="btrfs-progs ca-certificates curl dhcpcd5 git htop neofetch ssh ssh-imp
 #BOOT_SIZE=100
 #ROOTFS_DIR="rootfs"
 #BOOTSTRAP_DIR="bootstrap"
-#SWAPSIZE="2048"
+SWAPSIZE="2048"
 
 # Use these flags to skip stages
 SKIP_BOOTSTRAP=1
-SKIP_EXPORT=1
-SKIP_COMPRESS=1
+# SKIP_EXPORT=1
+# SKIP_COMPRESS=1
