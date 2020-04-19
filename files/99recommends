@@ -1,0 +1,3 @@
+# Disable automatic installation of recommended packages
+APT::Install-Recommends "0";
+APT::Install-Suggests "0";

@@ -1,27 +1,24 @@
-RELEASE="buster"
+#maybe look at making a script to create a swap file manually instead of installing dphys-swapfile (bloat)
+
+# set LC_ALL and LANGUAGE in /etc/default/locale to prevent apt perl warnings
+
 
 USERNAME="pi"
 PASSWORD="raspberry"
 HOSTNAME="raspberrypi"
 LOCALE="en_US.UTF-8"
 TIMEZONE="Europe/Paris"
-USER_SHELL="zsh"
 
-PACKAGES="raspberrypi-bootloader raspberrypi-kernel"    # Bootloader and kernel
-PACKAGES+=" libraspberrypi-bin libraspberrypi0"         # Video driver
-PACKAGES+=" dphys-swapfile fake-hwclock dosfstools"     # Hardware utilities
-PACKAGES+=" btrfs-progs sudo dhcpcd5 whiptail" 
-PACKAGES+=" ssh ssh-import-id ca-certificates curl git"
-PACKAGES+=" vim zsh neofetch"
+PACKAGES="btrfs-progs ca-certificates curl dhcpcd5 git htop neofetch ssh ssh-import-id sudo vim zsh"
 #PACKAGES+=" glances steamlink kodi"
-
 
 #IMG_NAME="raspbian-minimal"
 #BOOT_SIZE=100
 #ROOTFS_DIR="rootfs"
 #BOOTSTRAP_DIR="bootstrap"
+#SWAPSIZE="2048"
 
-
+# Use these flags to skip stages
 SKIP_BOOTSTRAP=1
-SKIP_EXPORT=0
-SKIP_COMPRESS=0
+SKIP_EXPORT=1
+SKIP_COMPRESS=1

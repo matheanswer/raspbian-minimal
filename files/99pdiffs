@@ -1,0 +1,2 @@
+# Disble PDiffs because the current implementation is slow on low-powered devices (source: pi-gen)
+Acquire::PDiffs "0";
