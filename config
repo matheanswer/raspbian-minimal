@@ -1,7 +1,6 @@
-#maybe look at making a script to create a swap file manually instead of installing dphys-swapfile (bloat)
-
-# set LC_ALL and LANGUAGE in /etc/default/locale to prevent apt perl warnings
-
+#TODO
+#setup auto rootfs resize
+#maybe look at making a script to create a swap file manually with swapon instead of installing dphys-swapfile (bloat)
 
 USERNAME="pi"
 PASSWORD="raspberry"
@@ -12,10 +11,13 @@ TIMEZONE="Europe/Paris"
 PACKAGES="btrfs-progs ca-certificates curl dhcpcd5 git htop neofetch ssh ssh-import-id sudo vim zsh"
 #PACKAGES+=" glances steamlink kodi"
 
+# grml zshrc
+# wget -O .zshrc https://git.grml.org/f/grml-etc-core/etc/zsh/zshrc
+
 #IMG_NAME="raspbian-minimal"
-#BOOT_SIZE=100
 #ROOTFS_DIR="rootfs"
 #BOOTSTRAP_DIR="bootstrap"
+#BOOT_SIZE=100
 SWAPSIZE="2048"
 
 # Use these flags to skip stages

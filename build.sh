@@ -30,20 +30,20 @@ else
 fi
 
 # Rsync rootfs
-echo -e "${STYLE}copying bootstrap/ to rootfs/${CLEAR}"
+echo -e "${STYLE}${BOOTSTRAP_DIR}/ copy to ${ROOTFS_DIR}/${CLEAR}"
 rm -rf "${ROOTFS_DIR}"
 rsync -aHAXx --stats -h "${BOOTSTRAP_DIR}/" "${ROOTFS_DIR}/"
 
 # Packages
-echo -e "${STYLE}packages${CLEAR}"
+echo -e "${STYLE}apt config, update, upgrade and package install${CLEAR}"
 install -v -m 644 files/sources.list "${ROOTFS_DIR}/etc/apt/sources.list"
 sed -i "s/RELEASE/${RELEASE}/" "${ROOTFS_DIR}/etc/apt/sources.list"
 install -v -m 644 files/99pdiffs "${ROOTFS_DIR}/etc/apt/apt.conf.d/"
 install -v -m 644 files/99recommends "${ROOTFS_DIR}/etc/apt/apt.conf.d/"
 chroot ${ROOTFS_DIR} apt-key add < files/raspbian.gpg.key
 chroot ${ROOTFS_DIR} << EOF
-export DEBIAN_FRONTEND=noninteractive
 export LC_ALL=C
+export DEBIAN_FRONTEND=noninteractive
 debconf-set-selections << SELEOF
 locales locales/locales_to_be_generated multiselect ${LOCALE} UTF-8
 locales locales/default_environment_locale select ${LOCALE}
@@ -86,7 +86,7 @@ if [[ ${SWAPSIZE} -lt 100 ]]; then
 	SWAPSIZE="100"
 fi
 install -v -m 644 files/99-swappiness.conf "${ROOTFS_DIR}/etc/sysctl.d/"
-sed -i "s/#CONF_SWAPSIZE=/#CONF_SWAPSIZE=${SWAPSIZE}/" "${ROOTFS_DIR}/etc/dphys-swapfile"
+sed -i "s/#CONF_SWAPSIZE=/CONF_SWAPSIZE=${SWAPSIZE}/" "${ROOTFS_DIR}/etc/dphys-swapfile"
 
 # Boot files
 install -v -m 644 files/fstab "${ROOTFS_DIR}/etc/fstab"
