@@ -8,8 +8,14 @@ if [ -f config ]; then
 fi
 
 RELEASE="${RELEASE:-"buster"}"
-BOOTSTRAP_DIR="${BOOTSTRAP_DIR:-"bootstrap"}"
-ROOTFS_DIR="${ROOTFS_DIR:-"rootfs"}"
+
+WORK_DIR="${WORK_DIR:-"."}"
+if [ ! -d ${WORK_DIR} ]; then
+	mkdir ${WORK_DIR}
+fi
+
+BOOTSTRAP_DIR="${WORK_DIR}/bootstrap"
+ROOTFS_DIR="${WORK_DIR}/rootfs"
 
 USERNAME="${USERNAME:-"pi"}"
 PASSWORD="${PASSWORD:-"raspberry"}"

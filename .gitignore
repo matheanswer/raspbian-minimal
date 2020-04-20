@@ -5,5 +5,4 @@ boot
 bootstrap
 rootfs
 *.img
-*.zip
 *.xz

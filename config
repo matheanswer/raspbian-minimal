@@ -15,12 +15,20 @@ PACKAGES="btrfs-progs ca-certificates curl dhcpcd5 git htop neofetch ssh ssh-imp
 # wget -O .zshrc https://git.grml.org/f/grml-etc-core/etc/zsh/zshrc
 
 #IMG_NAME="raspbian-minimal"
-#ROOTFS_DIR="rootfs"
-#BOOTSTRAP_DIR="bootstrap"
+WORK_DIR="/workdir"
+
 #BOOT_SIZE=100
-SWAPSIZE="2048"
+#SWAPSIZE="2048"
 
 # Use these flags to skip stages
-SKIP_BOOTSTRAP=1
+# SKIP_BOOTSTRAP=1
 # SKIP_EXPORT=1
 # SKIP_COMPRESS=1
+
+
+# docker requires this to access loop devices
+# --privileged
+# or maybe just
+# --cap-add SYS_ADMIN  --device /dev/loop0 --device /dev/loop-control
+
+# docker run --name raspbian --privileged -it -v workdir:/workdir -v $(pwd):/source raspbian
