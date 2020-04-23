@@ -1,5 +1,5 @@
 # Use 64 bits kernel, probably bad for a Pi 3, good for Pi 4
-#arm_64bit=1
+arm_64bit=1
 
 # Memory assigned to the GPU (min=16, def=64)
 #gpu_mem=16

@@ -8,7 +8,7 @@ HOSTNAME="raspberrypi"
 LOCALE="en_US.UTF-8"
 TIMEZONE="Europe/Paris"
 
-PACKAGES="btrfs-progs ca-certificates curl dhcpcd5 git htop neofetch ssh ssh-import-id sudo vim zsh"
+PACKAGES="btrfs-progs ca-certificates curl dhcpcd5 git htop neofetch rsync ssh ssh-import-id sudo vim zsh"
 #PACKAGES+=" glances steamlink kodi"
 
 # grml zshrc
@@ -17,12 +17,12 @@ PACKAGES="btrfs-progs ca-certificates curl dhcpcd5 git htop neofetch ssh ssh-imp
 #IMG_NAME="raspbian-minimal"
 WORK_DIR="/workdir"
 
-#BOOT_SIZE=100
-#SWAPSIZE="2048"
+BOOT_SIZE="100"
+SWAPSIZE="4096"
 
 # Use these flags to skip stages
 # SKIP_BOOTSTRAP=1
-# SKIP_EXPORT=1
+SKIP_EXPORT=1
 # SKIP_COMPRESS=1
 
 

@@ -14,36 +14,43 @@ ROOT_MNT="${WORK_DIR}/root_mnt"
 
 BOOT_SIZE="${BOOT_SIZE:-"100"}"
 IMG_NAME="${IMG_NAME:-"raspbian-minimal"}"
-IMG_FILE="${IMG_NAME}-$(date +%Y-%m-%d).img"
+IMG_FILE_BOOT="${IMG_NAME}-$(date +%Y-%m-%d)-BOOT.img"
+IMG_FILE_ROOT="${IMG_NAME}-$(date +%Y-%m-%d)-ROOT.img"
 
 # Image
 echo -e "${STYLE}building image file${CLEAR}"
-rm -f ${IMG_FILE} 
+rm -f ${IMG_FILE_BOOT} ${IMG_FILE_ROOT}  
 ROOTFS_SIZE=$(du -BM -s ${ROOTFS_DIR}/ | cut -f 1 | sed "s/M//")
-IMG_SIZE=$((${BOOT_SIZE} + ${ROOTFS_SIZE} + 10))
-truncate -s "${IMG_SIZE}M" "${IMG_FILE}"
+IMG_SIZE=$((${ROOTFS_SIZE} + 10))
+truncate -s "${BOOT_SIZE}M" "${IMG_FILE_BOOT}"
+truncate -s "${IMG_SIZE}M" "${IMG_FILE_ROOT}"
 
-sfdisk "${IMG_FILE}" --label dos << EOF
-,${BOOT_SIZE}M,c
+sfdisk "${IMG_FILE_BOOT}" --label dos << EOF
+,,c
+EOF
+sfdisk "${IMG_FILE_ROOT}" --label dos << EOF
 ;
 EOF
 
-LOOP_DEV=$(losetup -f)
-losetup -P ${LOOP_DEV} ${IMG_FILE}
+LOOP_DEV_BOOT=$(losetup -f)
+losetup -P ${LOOP_DEV_BOOT} ${IMG_FILE_BOOT}
+
+LOOP_DEV_ROOT=$(losetup -f)
+losetup -P ${LOOP_DEV_ROOT} ${IMG_FILE_ROOT}
 
 # only needed in docker #######################################################
-#mknod "${LOOP_DEV}p1" b 259 0
-#mknod "${LOOP_DEV}p2" b 259 1
+#mknod "${LOOP_DEV_BOOT}p1" b 259 0
+#mknod "${LOOP_DEV_ROOT}p1" b 259 0
 # only needed in docker #######################################################
 
-mkfs.vfat -F 32 -n BOOT "${LOOP_DEV}p1"
-mkfs.ext4 "${LOOP_DEV}p2"
+mkfs.vfat -F 32 -n BOOT "${LOOP_DEV_BOOT}p1"
+mkfs.ext4 "${LOOP_DEV_ROOT}p1"
 
 rm -rf ${BOOT_MNT} ${ROOT_MNT}
 mkdir ${BOOT_MNT} ${ROOT_MNT}
 
-mount "${LOOP_DEV}p1" ${BOOT_MNT}
-mount "${LOOP_DEV}p2" ${ROOT_MNT}
+mount "${LOOP_DEV_BOOT}p1" ${BOOT_MNT}
+mount "${LOOP_DEV_ROOT}p1" ${ROOT_MNT}
 
 # Copy
 echo -e "${STYLE}copying boot and root filesystem${CLEAR}"
@@ -51,8 +58,8 @@ rsync -rtx --stats -h "${ROOTFS_DIR}/boot/" "${BOOT_MNT}/"
 rsync -aHAXx --stats -h --exclude /var/cache/apt/archives --exclude /boot "${ROOTFS_DIR}/" "${ROOT_MNT}/"
 mkdir "${ROOT_MNT}/boot"
 
-BOOT_PARTUUID="$(lsblk -dno PARTUUID ${LOOP_DEV}p1)"
-ROOT_PARTUUID="$(lsblk -dno PARTUUID ${LOOP_DEV}p2)"
+BOOT_PARTUUID="$(lsblk -dno PARTUUID ${LOOP_DEV_BOOT}p1)"
+ROOT_PARTUUID="$(lsblk -dno PARTUUID ${LOOP_DEV_ROOT}p1)"
 
 sed -i "s/BOOTDEV/PARTUUID=${BOOT_PARTUUID}/" "${ROOT_MNT}/etc/fstab"
 sed -i "s/ROOTDEV/PARTUUID=${ROOT_PARTUUID}/" "${ROOT_MNT}/etc/fstab"
@@ -62,17 +69,20 @@ sync
 umount ${BOOT_MNT} ${ROOT_MNT}
 rm -rf ${BOOT_MNT} ${ROOT_MNT}
 
-losetup -d ${LOOP_DEV}
+losetup -d ${LOOP_DEV_ROOT}
+losetup -d ${LOOP_DEV_BOOT}
 
 # only needed in docker #######################################################
-#rm -rf "${LOOP_DEV}p*"
+#rm -rf "${LOOP_DEV_ROOT}p1" "${LOOP_DEV_BOOT}p1"
 # only needed in docker #######################################################
 
 # Compress
 if [ ! "${SKIP_COMPRESS}" == "1" ]; then
 	echo -e "${STYLE}compressing with xz${CLEAR}"
-	rm -f ${IMG_FILE}.xz
-	xz -zkvT 0 ${IMG_FILE}
+	rm -f ${IMG_FILE_BOOT}.xz
+	xz -zkvT 0 ${IMG_FILE_BOOT}
+	rm -f ${IMG_FILE_ROOT}.xz
+	xz -zkvT 0 ${IMG_FILE_ROOT}
 else
 	echo -e "${STYLE}skipping compression${CLEAR}"
 fi
