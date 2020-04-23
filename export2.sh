@@ -21,12 +21,12 @@ IMG_FILE_ROOT="${IMG_NAME}-$(date +%Y-%m-%d)-ROOT.img"
 echo -e "${STYLE}building image file${CLEAR}"
 rm -f ${IMG_FILE_BOOT} ${IMG_FILE_ROOT}  
 ROOTFS_SIZE=$(du -BM -s ${ROOTFS_DIR}/ | cut -f 1 | sed "s/M//")
-IMG_SIZE=$((${ROOTFS_SIZE} + 10))
-truncate -s "${BOOT_SIZE}M" "${IMG_FILE_BOOT}"
+IMG_SIZE=$((${ROOTFS_SIZE} + 200))
 truncate -s "${IMG_SIZE}M" "${IMG_FILE_ROOT}"
+truncate -s "$((${BOOT_SIZE}+10))M" "${IMG_FILE_BOOT}"
 
 sfdisk "${IMG_FILE_BOOT}" --label dos << EOF
-,,c
+,${BOOT_SIZE}M,c
 EOF
 sfdisk "${IMG_FILE_ROOT}" --label dos << EOF
 ;

@@ -18,7 +18,7 @@ PACKAGES="btrfs-progs ca-certificates curl dhcpcd5 git htop neofetch rsync ssh s
 #WORK_DIR="/workdir"
 
 BOOT_SIZE="100"
-SWAPSIZE="4096"
+SWAPSIZE="100"
 
 # Use these flags to skip stages
 # SKIP_BOOTSTRAP=1
