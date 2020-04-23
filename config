@@ -15,7 +15,7 @@ PACKAGES="btrfs-progs ca-certificates curl dhcpcd5 git htop neofetch rsync ssh s
 # wget -O .zshrc https://git.grml.org/f/grml-etc-core/etc/zsh/zshrc
 
 #IMG_NAME="raspbian-minimal"
-WORK_DIR="/workdir"
+#WORK_DIR="/workdir"
 
 BOOT_SIZE="100"
 SWAPSIZE="4096"
