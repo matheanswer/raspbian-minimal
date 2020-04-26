@@ -9,7 +9,7 @@ LOCALE="en_US.UTF-8"
 TIMEZONE="Europe/Paris"
 
 PACKAGES="btrfs-progs ca-certificates curl dhcpcd5 git htop neofetch rsync ssh ssh-import-id sudo vim zsh"
-#PACKAGES+=" glances steamlink kodi"
+#PACKAGES+=" glances steamlink kodi dphys-swapfile"
 
 # grml zshrc
 # wget -O .zshrc https://git.grml.org/f/grml-etc-core/etc/zsh/zshrc
@@ -18,17 +18,9 @@ PACKAGES="btrfs-progs ca-certificates curl dhcpcd5 git htop neofetch rsync ssh s
 #WORK_DIR="/workdir"
 
 BOOT_SIZE="100"
-SWAPSIZE="100"
+#SWAPSIZE="100"
 
 # Use these flags to skip stages
-# SKIP_BOOTSTRAP=1
-SKIP_EXPORT=1
-# SKIP_COMPRESS=1
-
-
-# docker requires this to access loop devices
-# --privileged
-# or maybe just
-# --cap-add SYS_ADMIN  --device /dev/loop0 --device /dev/loop-control
-
-# docker run --name raspbian --privileged -it -v workdir:/workdir -v $(pwd):/source raspbian
+SKIP_BOOTSTRAP=1
+#SKIP_EXPORT=1
+#SKIP_COMPRESS=1

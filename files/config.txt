@@ -12,3 +12,14 @@ dtoverlay=disable-bt
 
 # Disable wifi
 dtoverlay=disable-wifi
+
+
+
+
+
+#dtoverlay=vc4-fkms-v3d,cma-265
+#gpu_mem=128
+#hdmi_ignore_cec_init=1
+#hdmi_force_hotplug=1
+#hdmi_group=1
+#hdmi_mode=16

@@ -23,7 +23,7 @@ HOSTNAME="${HOSTNAME:-"raspberrypi"}"
 LOCALE="${LOCALE:-"en_US.UTF-8"}"
 TIMEZONE="${TIMEZONE:-"UTC"}"
 
-PACKAGES+=" raspberrypi-bootloader raspberrypi-kernel libraspberrypi-bin libraspberrypi0 dosfstools dphys-swapfile fake-hwclock locales whiptail"
+PACKAGES+=" raspberrypi-bootloader raspberrypi-kernel libraspberrypi-bin libraspberrypi0 dosfstools fake-hwclock locales whiptail"
 
 # Bootstrap
 if [ "${SKIP_BOOTSTRAP}" == "1" ]; then
@@ -88,11 +88,11 @@ dpkg-reconfigure -f noninteractive tzdata
 EOF
 
 # Swap
-if [[ ${SWAPSIZE} -lt 100 ]]; then
-	SWAPSIZE="100"
-fi
-install -v -m 644 files/99-swappiness.conf "${ROOTFS_DIR}/etc/sysctl.d/"
-sed -i "s/#CONF_SWAPSIZE=/CONF_SWAPSIZE=${SWAPSIZE}/" "${ROOTFS_DIR}/etc/dphys-swapfile"
+#if [[ ${SWAPSIZE} -lt 100 ]]; then
+#	SWAPSIZE="100"
+#fi
+#install -v -m 644 files/99-swappiness.conf "${ROOTFS_DIR}/etc/sysctl.d/"
+#sed -i "s/#CONF_SWAPSIZE=/CONF_SWAPSIZE=${SWAPSIZE}/" "${ROOTFS_DIR}/etc/dphys-swapfile"
 
 # Boot files
 install -v -m 644 files/fstab "${ROOTFS_DIR}/etc/fstab"
