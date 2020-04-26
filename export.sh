@@ -20,7 +20,7 @@ IMG_FILE="${IMG_NAME}-$(date +%Y-%m-%d).img"
 echo -e "${STYLE}building image file${CLEAR}"
 rm -f ${IMG_FILE} 
 ROOTFS_SIZE=$(du -BM -s ${ROOTFS_DIR}/ | cut -f 1 | sed "s/M//")
-IMG_SIZE=$((${BOOT_SIZE} + ${ROOTFS_SIZE} + 10))
+IMG_SIZE=$((${BOOT_SIZE} + ${ROOTFS_SIZE} + 100))
 truncate -s "${IMG_SIZE}M" "${IMG_FILE}"
 
 sfdisk "${IMG_FILE}" --label dos << EOF
